@@ -4,7 +4,7 @@ import println
 import readInput
 import kotlin.system.measureNanoTime
 
-private val FOLDER = "sample"
+private const val FOLDER = "sample"
 
 fun main() {
     fun part1(input: List<String>): Int {
