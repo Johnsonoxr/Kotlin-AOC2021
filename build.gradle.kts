@@ -13,3 +13,8 @@ tasks {
         gradleVersion = "8.5"
     }
 }
+
+dependencies {
+    //  coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+}
