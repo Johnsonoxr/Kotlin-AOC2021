@@ -26,8 +26,6 @@ fun main() {
         part2(input).println()
     }
 
-    FOLDER.println()
-
     println("Part 1 takes ${part1Time / 1e6f} milliseconds.")
     println("Part 2 takes ${part2Time / 1e6f} milliseconds.")
 }
