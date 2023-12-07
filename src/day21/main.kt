@@ -5,6 +5,7 @@ import readInput
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.system.measureNanoTime
+import kotlin.time.times
 
 private const val FOLDER = "day21"
 
@@ -46,7 +47,7 @@ fun main() {
 
     fun part2(input: List<String>): Long {
 
-        data class GameState(val p1Location: Int, val p2Location: Int, val p1Score: Int, val p2Score: Int)
+        data class GameState(val turns: Int, val p1Location: Int, val p2Location: Int, val p1Score: Int, val p2Score: Int)
 
         fun MutableMap<GameState, Long>.add(key: GameState, value: Long) {
             this[key] = this.getOrDefault(key, 0L) + value
@@ -55,7 +56,7 @@ fun main() {
         val location1 = "\\d".toRegex().findAll(input[0]).toList().let { it[1].value.toInt() }
         val location2 = "\\d".toRegex().findAll(input[1]).toList().let { it[1].value.toInt() }
 
-        var mapUndone = mapOf<GameState, Long>(GameState(location1, location2, 0, 0) to 1)
+        var mapUndone = mapOf<GameState, Long>(GameState(0, location1, location2, 0, 0) to 1)
         var playerId = 1
 
         val diceRollCopyMap = mapOf(
@@ -71,20 +72,18 @@ fun main() {
         val mapDone = mutableMapOf<GameState, Long>()
         var iteration = 0
         while (mapUndone.isNotEmpty()) {
-            "\nIteration ${++iteration}, gameState count = ${mapUndone.size}".println()
-            mapUndone.keys.maxBy { max(it.p1Score, it.p2Score) }.let { it.println() }
-            mapUndone.keys.minBy { min(it.p1Score, it.p2Score) }.let { it.println() }
+            "Iteration ${++iteration}, game undone=${mapUndone.size}, game done=${mapDone.size}".println()
 
             val map = mutableMapOf<GameState, Long>()
             mapUndone.forEach { (gameState, gameStateCount) ->
                 diceRollCopyMap.forEach { (diceRoll, copyCount) ->
                     if (playerId == 1) {
                         val newLocation = (gameState.p1Location + diceRoll - 1) % 10 + 1
-                        val newGameState = gameState.copy(p1Location = newLocation, p1Score = gameState.p1Score + newLocation)
+                        val newGameState = gameState.copy(turns = gameState.turns + 1, p1Location = newLocation, p1Score = gameState.p1Score + newLocation)
                         map.add(newGameState, gameStateCount * copyCount)
                     } else {
                         val newLocation = (gameState.p2Location + diceRoll - 1) % 10 + 1
-                        val newGameState = gameState.copy(p2Location = newLocation, p2Score = gameState.p2Score + newLocation)
+                        val newGameState = gameState.copy(turns = gameState.turns + 1, p2Location = newLocation, p2Score = gameState.p2Score + newLocation)
                         map.add(newGameState, gameStateCount * copyCount)
                     }
                 }
